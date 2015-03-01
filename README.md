@@ -3,6 +3,12 @@ This package contains a utility to bootstrap a standalone MapTool server.
 To use, you need MapTool from rptools.net:
 http://www.rptools.net/index.php?page=downloads#MapTool
 
+Once you have apache ant and the ivy plugin for ant installed
+(warning, download ant from their website, as your distribution's copy
+may be broken), you can generate the standalone.jar. To do this, simply run:
+
+    `ant dist`
+
 Download a .zip file, extract, and then drop the provided standalone.jar file into this folder alongside
 the maptool-1.3bXX.jar (as of this writing, b91 is current and is the only version this server has been
 tested with). You can then start the standalone server like so:

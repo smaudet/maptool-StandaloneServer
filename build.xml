@@ -1,0 +1,71 @@
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="maptool-standalone-server" default="dist" basedir=".">
+  <property name="src" value="src"/>
+  <property name="build" value="build"/>
+  <property name="dist" value="dist"/>
+  <target name="resolve-deps" description="--> retrieve mvn deps with ivy">
+    <ivy:retrieve />
+  </target>
+  <target name="init" depends="resolve-deps">
+    <!-- Generates ${DSTAMP} -->
+    <tstamp/>
+
+    <mkdir dir="${build}"/>
+    <mkdir dir="${dist}"/>
+
+    <path id="test.classpath">
+      <pathelement path="${java.class.path}"/>
+      <fileset dir="lib/">
+        <patternset>
+          <include name="**/*.jar"/>
+        </patternset>
+      </fileset>
+    </path>
+
+    <path id="test.test">
+      <pathElement path="${build}"/>
+      <pathelement path="${java.class.path}"/>
+      <fileset dir="lib/">
+        <patternset>
+          <include name="**/*.jar"/>
+        </patternset>
+      </fileset>
+    </path>
+    
+    <path id="compile.classpath">
+      <pathelement path="${java.class.path}"/>
+      <fileset dir="lib/">
+        <patternset>
+          <include name="**/*.jar"/>
+        </patternset>
+      </fileset>
+    </path>
+
+    <taskdef name="testng" classpathref="test.classpath" classname="org.testng.TestNGAntTask"/>
+  </target>
+  <target name="compile" depends="init">
+    <javac srcdir="${src}" destdir="${build}" classpathref="compile.classpath">
+      <exclude name="**/*Test*"/>
+    </javac>
+  </target>
+  <target name="run" depends="dist">
+    <java fork="true" jar="${dist}/standalone-${DSTAMP}.jar"/>
+  </target>
+  <target name="clean">
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  </target>
+  <target name="dist" depends="compile">
+    <jar jarfile="${dist}/standalone-${DSTAMP}.jar" basedir="${build}" manifest="${src}/Manifest.txt"/>
+  </target>
+
+  <target name="test-compile" depends="init">
+    <javac srcdir="${src}" destdir="${build}" classpathref="test.classpath" debug="true" debuglevel="source" verbose="2">
+      <include name="**/*Test*"/>
+    </javac>
+  </target>
+  <target name="test" depends="test-compile">
+    <testng classpathref="test.test" groups="standard">
+      <classfileset dir="${build}" includes="*Test*"/>
+    </testng>
+  </target>
+</project>

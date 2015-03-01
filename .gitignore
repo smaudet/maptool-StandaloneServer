@@ -14,3 +14,6 @@ hs_err_pid*
 # Eclipse Stuff
 *.classpath
 *.project
+*.iml
+
+.idea/
